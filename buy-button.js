@@ -1,19 +1,20 @@
- (function () {
-    const params = new URLSearchParams(window.location.search);
-    const ttclid = params.get("ttclid");
-    if (ttclid) {
-      localStorage.setItem("ttclid", ttclid);
-    }
-  })();
-  
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const ttclid = params.get("ttclid");
+  if (ttclid) {
+    localStorage.setItem("ttclid", ttclid);
+  }
+})();
+
 document.addEventListener("DOMContentLoaded", function () {
   const orderBtn = document.querySelector(".custom-buy-button");
 
   if (!orderBtn) return;
 
-  const offerGroup = "{{ product.metafields.custom.offer_group }}";
-  const productId = "{{ product.metafields.custom.product_id }}";
-  const imageId = "{{ product.metafields.custom.image_id }}";
+  const metafields = window.productMetafields || {};
+  const offerGroup = metafields.offer_group;
+  const productId = metafields.product_id;
+  const imageId = metafields.image_id;
 
   const groupUrls = {
     "group1": "https://www.bcdxmn8trk.com/5P6NRK/2KTQH2G/",
@@ -29,11 +30,11 @@ document.addEventListener("DOMContentLoaded", function () {
       alert("Tracking link not available for this product.");
       return;
     }
- const ttclid = localStorage.getItem("ttclid") || "";
+
+    const ttclid = localStorage.getItem("ttclid") || "";
     const sourceId = encodeURIComponent(`${productId}___${imageId}`);
     const finalUrl = `${groupUrls[offerGroup]}?source_id=${sourceId}&sub5=${ttclid}`;
 
-    // Create popup modal
     const popup = document.createElement("div");
     popup.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index:9999;";
     popup.innerHTML = `
@@ -47,7 +48,6 @@ document.addEventListener("DOMContentLoaded", function () {
     `;
     document.body.appendChild(popup);
 
-    // Popup button handlers
     popup.querySelector("#proceed-btn").addEventListener("click", () => {
       window.location.href = finalUrl;
     });
